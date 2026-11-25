@@ -1,142 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tufael Alom Tuhin TLM</title>
-    <style>
-        body { 
-            background: linear-gradient(180deg, #111, #1a1a2e); 
-            color: white; 
-            text-align: center; 
-            font-family: Arial; 
-            padding: 20px;
-            margin: 0;
-        }
-        h1 { color: cyan; font-size: 28px; margin-bottom: 5px; }
-        p { color: #aaa; }
-        h2 { color: cyan; margin-top: 30px; }
-        .btn {
-            display: inline-block; 
-            margin: 10px; 
-            padding: 12px 25px; 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 8px; 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            opacity: 0.8;
-        }
-        .about {
-            color: gray; 
-            max-width: 400px; 
-            margin: 15px auto;
-            line-height: 1.6;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tufael Alom Tuhin TLM</title>
+  <style>
+    body{background:#0f172a; color:white; text-align:center; font-family:sans-serif; padding:20px; line-height:1.6}
+    img{width:180px; border-radius:50%; border:3px solid #00f5ff}
+    h1, h2{color:#00f5ff}
+    .btn-link{display:inline-block; padding:12px 20px; margin:5px; border-radius:8px; text-decoration:none; color:white; font-weight:bold}
+    .fb{background:#1877f2} .wa{background:#25D366} .mail{background:#EA4335}
+    .react-area{margin-top:30px}
+    .react-btn{font-size:28px; background:#1e293b; border:none; padding:10px 15px; margin:5px; border-radius:12px; color:white; cursor:pointer}
+    .react-btn:hover{background:#334155}
+    .reset{background:#dc2626; font-size:14px; padding:8px 12px; margin-top:10px}
+  </style>
 </head>
-<body> 
+<body>
 
-<h1>Tufael Alom Tuhin TLM</h1> 
-<p>আমার প্রথম ওয়েবসাইট - Termux দিয়ে বানানো</p> 
-
-<img src="tuhin.jpg" width="180" style="border-radius: 50%; border: 3px solid cyan; margin-top: 15px;">
+<h1>Tufael Alom Tuhin TLM</h1>
+<p>আমার প্রথম ওয়েবসাইট - Termux দিয়ে বানানো</p>
+<img src="tuhin.jpg" alt="Tuhin">
 
 <h2>আমার সম্পর্কে</h2>
-<p class="about">
-আসসালামু আলাইকুম। আমি Tufael Alom Tuhin।<br>
-এটা আমার বানানো প্রথম ওয়েবসাইট।
-</p>
+<p>আসসালামু আলাইকুম। আমি Tufael Alom Tuhin।<br>এটা আমার বানানো প্রথম ওয়েবসাইট।</p>
 
 <h2>যোগাযোগ</h2>
+<a href="https://www.facebook.com/tufael" class="btn-link fb">Facebook</a>
+<a href="https://wa.me/8801894398350" class="btn-link wa" target="_blank">WhatsApp</a>
+<a href="mailto:tufaelalomtuhin@gmail.com" class="btn-link mail">Email</a>
 
-<!-- Facebook বাটন -->
-<a href="https://www.facebook.com/tufael.alom.tuhin" target="_blank" class="btn" style="background: #1877F2;">
-    Facebook
-</a>
+<div class="react-area">
+  <h2>রিয়েক্ট দাও 👇</h2>
+  <div id="reactButtons"></div>
+  <button id="resetBtn" class="react-btn reset">Reset</button>
+</div>
 
-<!-- WhatsApp বাটন -->
-<a href="https://wa.me/8801894398350" target="_blank" class="btn" style="background: #25D366;">
-    WhatsApp
-</a>
+<p style="margin-top:50px; color:#555">© 2026 Tufael Alom Tuhin. All rights reserved.</p>
 
-<!-- Email বাটন -->
-<a href="mailto:tufaelalomtuhin@gmail.com" class="btn" style="background: #EA4335;">
-    Email
-</a>
-
-<p style="margin-top: 50px; color: #555; font-size: 12px;">© 2026 Tufael Alom Tuhin. All rights reserved.</p>
 <script>
-  const reacts = [
-    { id: 'like', emoji: '👍', label: 'Like' },
-    { id: 'love', emoji: '❤️', label: 'Love' },
-    { id: 'fire', emoji: '🔥', label: 'Fire' },
-    { id: 'funny', emoji: '😂', label: 'Funny' },
-    { id: 'wow', emoji: '😮', label: 'Wow' },
-    { id: 'dislike', emoji: '👎', label: 'Dislike' }
-  ];
-
-  const reactionsDiv = document.getElementById('reactions');
-  const messageEl = document.getElementById('message');
+  let counts = JSON.parse(localStorage.getItem('reactCounts')) || {like:0, love:0, haha:0, wow:0};
+  let userReact = localStorage.getItem('userReact');
+  const reacts = {like:'👍', love:'❤️', haha:'😂', wow:'😮'};
+  const reactButtonsDiv = document.getElementById('reactButtons');
   const resetBtn = document.getElementById('resetBtn');
 
-  let counts = JSON.parse(localStorage.getItem('reactCounts')) || {};
-  let userReact = localStorage.getItem('userReact') || null;
-
-  reacts.forEach(r => {
-    if (!counts[r.id]) counts[r.id] = 0;
-  });
-
   function renderButtons() {
-    reactionsDiv.innerHTML = '';
-    
-    reacts.forEach(r => {
+    reactButtonsDiv.innerHTML = '';
+    for (let id in reacts) {
       const btn = document.createElement('button');
       btn.className = 'react-btn';
-      if (userReact === r.id) btn.classList.add('active');
-      
-      btn.innerHTML = `\( {r.emoji} <span> \){counts[r.id]}</span>`;
-      btn.title = r.label;
-
-      btn.addEventListener('click', () => handleReact(r.id));
-      reactionsDiv.appendChild(btn);
-    });
-
-    if (userReact) {
-      const selected = reacts.find(r => r.id === userReact);
-      messageEl.textContent = `তুমি ${selected.emoji} দিয়েছো`;
-      resetBtn.style.display = 'inline-block';
-    } else {
-      messageEl.textContent = '';
-      resetBtn.style.display = 'none';
+      btn.innerHTML = `${reacts[id]} <span>${counts[id]}</span>`;
+      btn.onclick = () => handleReact(id);
+      reactButtonsDiv.appendChild(btn);
     }
+    resetBtn.style.display = userReact ? 'inline-block' : 'none';
   }
 
   function handleReact(id) {
-    if (userReact && userReact !== id) {
-      counts[userReact]--;
-    }
-
-    if (userReact === id) {
-      counts[id]--;
-      userReact = null;
-    } else {
-      counts[id]++;
-      userReact = id;
-    }
-
+    if (userReact && userReact !== id) { counts[userReact]--; }
+    if (userReact === id) { counts[id]--; userReact = null; } 
+    else { counts[id]++; userReact = id; }
     localStorage.setItem('reactCounts', JSON.stringify(counts));
-    localStorage.setItem('userReact', userReact || '');
-
+    localStorage.setItem('userReact', userReact);
     renderButtons();
   }
 
   resetBtn.addEventListener('click', () => {
     if (userReact) {
-      counts[userReact]--;
-      userReact = null;
+      counts[userReact]--; userReact = null;
       localStorage.setItem('reactCounts', JSON.stringify(counts));
       localStorage.setItem('userReact', '');
       renderButtons();
@@ -144,6 +76,7 @@
   });
 
   renderButtons();
-    </script>
+</script>
+
 </body>
 </html>
