@@ -68,6 +68,82 @@
 </a>
 
 <p style="margin-top: 50px; color: #555; font-size: 12px;">© 2026 Tufael Alom Tuhin. All rights reserved.</p>
+<script>
+  const reacts = [
+    { id: 'like', emoji: '👍', label: 'Like' },
+    { id: 'love', emoji: '❤️', label: 'Love' },
+    { id: 'fire', emoji: '🔥', label: 'Fire' },
+    { id: 'funny', emoji: '😂', label: 'Funny' },
+    { id: 'wow', emoji: '😮', label: 'Wow' },
+    { id: 'dislike', emoji: '👎', label: 'Dislike' }
+  ];
 
+  const reactionsDiv = document.getElementById('reactions');
+  const messageEl = document.getElementById('message');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let counts = JSON.parse(localStorage.getItem('reactCounts')) || {};
+  let userReact = localStorage.getItem('userReact') || null;
+
+  reacts.forEach(r => {
+    if (!counts[r.id]) counts[r.id] = 0;
+  });
+
+  function renderButtons() {
+    reactionsDiv.innerHTML = '';
+    
+    reacts.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'react-btn';
+      if (userReact === r.id) btn.classList.add('active');
+      
+      btn.innerHTML = `\( {r.emoji} <span> \){counts[r.id]}</span>`;
+      btn.title = r.label;
+
+      btn.addEventListener('click', () => handleReact(r.id));
+      reactionsDiv.appendChild(btn);
+    });
+
+    if (userReact) {
+      const selected = reacts.find(r => r.id === userReact);
+      messageEl.textContent = `তুমি ${selected.emoji} দিয়েছো`;
+      resetBtn.style.display = 'inline-block';
+    } else {
+      messageEl.textContent = '';
+      resetBtn.style.display = 'none';
+    }
+  }
+
+  function handleReact(id) {
+    if (userReact && userReact !== id) {
+      counts[userReact]--;
+    }
+
+    if (userReact === id) {
+      counts[id]--;
+      userReact = null;
+    } else {
+      counts[id]++;
+      userReact = id;
+    }
+
+    localStorage.setItem('reactCounts', JSON.stringify(counts));
+    localStorage.setItem('userReact', userReact || '');
+
+    renderButtons();
+  }
+
+  resetBtn.addEventListener('click', () => {
+    if (userReact) {
+      counts[userReact]--;
+      userReact = null;
+      localStorage.setItem('reactCounts', JSON.stringify(counts));
+      localStorage.setItem('userReact', '');
+      renderButtons();
+    }
+  });
+
+  renderButtons();
+    </script>
 </body>
 </html>
